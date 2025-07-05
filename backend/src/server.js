@@ -1,9 +1,13 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import authRoutes from './routes/authRoutes.js';
+import connectDB from './database/database.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+connectDB();
 
 const app = express()
 const PORT = process.env.PORT
@@ -11,20 +15,15 @@ const PORT = process.env.PORT
 const frontendSrcPath = path.join(__dirname, '../../frontend/src');
 app.use(express.static(frontendSrcPath));
 
-
-
 app.use(express.json());
 
 app.get('/', (request, response) => {
   response.sendFile(path.join(frontendSrcPath, `index.html`));
 })
 
-app.post('/api/register', (request, response) => {
-  const {username, password} = request.body;
-  console.log(username, password);
-  response.json({"status":"ok"});
-})
+app.use('/auth', authRoutes);
+
 
 app.listen(PORT, () => {
-  console.log(`Started server on port: ${PORT}`)
+  console.log(`Started server on port: ${PORT} \n http://localhost:5000`)
 })

@@ -43,7 +43,7 @@ console.log(username_input.value);
 console.log(password_input.value);
 async function register_func() {
   try {
-    const response = await fetch('/api/register', {
+    const response = await fetch('/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type' : 'application/json',
@@ -54,12 +54,8 @@ async function register_func() {
       })
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to register');
-    }
-
     const data = await response.json();
-    console.log('Success:', data);
+    console.log(data);
 
   } catch (error) {
     console.log(error);

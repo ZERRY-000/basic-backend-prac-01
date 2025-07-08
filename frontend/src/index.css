@@ -2,3 +2,12 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+.todo-item {
+  border: solid 1px black;
+  margin-top: 10px;
+}
+
+.completed {
+  background-color: lightgreen;
+}

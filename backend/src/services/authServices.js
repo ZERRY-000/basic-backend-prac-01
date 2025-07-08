@@ -4,7 +4,6 @@ import UserModel from "../database/userModel.js";
 async function register(request, response) {
   const { username, password } = request.body;
   const hashedPassword = bcrypt.hashSync(password, 1);
-  console.log(username, hashedPassword);
   try {
     const user_instance = await UserModel.create({
       username: username,
@@ -20,4 +19,20 @@ async function register(request, response) {
   }
 }
 
-export { register };
+async function login(request, response) {
+  const {username, password} = request.body;
+
+  // find(username) -> compare(password)/ error -> complete/ error
+  const user = await UserModel.findOne({username: username});
+  // console.log("user (print from authServices) :", user);
+
+  if(!user) return response.status(401).json({message: "Your username or password is invalid"});
+
+  const passwordIsValid = bcrypt.compareSync(password, user.password); // (input_password, encrypted_password) 
+  if(!passwordIsValid) return response.json({message: "Your username or password is invalid"});
+  return response.json({message: "ok", user_id: user._id});
+
+  
+}
+
+export { register, login };

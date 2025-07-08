@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import authRoutes from './routes/authRoutes.js';
 import connectDB from './database/database.js';
+import todoRoutes from './routes/todoRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,6 +23,7 @@ app.get('/', (request, response) => {
 })
 
 app.use('/auth', authRoutes);
+app.use('/todos', todoRoutes);
 
 
 app.listen(PORT, () => {

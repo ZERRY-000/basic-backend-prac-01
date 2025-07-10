@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import UserModel from "../database/userModel.js";
 
 async function register(request, response) {
@@ -9,7 +10,9 @@ async function register(request, response) {
       username: username,
       password: hashedPassword,
     });
-    response.status(201).json({ status: "ok" });
+
+    
+    response.status(201).json({ message: "ok"});
   } catch (error) {
     if (error.code === 11000) {
       response.status(400).json({ error: "Username already exists" });
@@ -27,10 +30,11 @@ async function login(request, response) {
   // console.log("user (print from authServices) :", user);
 
   if(!user) return response.status(401).json({message: "Your username or password is invalid"});
-
+  console.log(user);
   const passwordIsValid = bcrypt.compareSync(password, user.password); // (input_password, encrypted_password) 
   if(!passwordIsValid) return response.json({message: "Your username or password is invalid"});
-  return response.json({message: "ok", user_id: user._id});
+  const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '3m'});
+  return response.json({message: "ok", user_id: user._id, token});
 
   
 }

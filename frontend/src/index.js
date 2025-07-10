@@ -14,6 +14,8 @@ app.innerHTML = `
     </div>
 `
 
+let token = localStorage.getItem('token')
+
 const switch_auth_button = document.getElementById('switch_auth');
 const header_auth = document.getElementById('header_auth');
 const register_btn = document.getElementById('register_btn');
@@ -51,6 +53,11 @@ console.log(username_input.value);
 console.log(password_input.value);
 
 async function register_func() {
+
+  const userVal = username_input.value;
+  const passVal = password_input.value;
+  if(userVal.trim() === "" || passVal.trim() === "" ) return;
+
   try {
     const response = await fetch('/auth/register', {
       method: 'POST',
@@ -64,6 +71,12 @@ async function register_func() {
     });
 
     const data = await response.json();
+    
+    if(data.message === "ok") {
+      username_input.value = "";
+      password_input.value = "";
+      alert('sign up completed');
+    }
     console.log(data);
 
   } catch (error) {
@@ -75,6 +88,10 @@ async function register_func() {
 let user_id;
 
 async function login_func() {
+  const userVal = username_input.value;
+  const passVal = password_input.value;
+  if(userVal.trim() === "" || passVal.trim() === "" ) return;
+  console.log("continue");
   try {
     const response = await fetch('/auth/login', {
       method: 'POST',
@@ -92,10 +109,15 @@ async function login_func() {
       user_id = data.user_id;
       homepage_display();
     }
+    if(data.token) {
+      token = data.token;
+      localStorage.setItem('token',token);
+    }
     else {
       user_id = null;
       alert(data.message);
     }
+    
     console.log('data (print from index.js):',data);
 
   } catch (error) {
